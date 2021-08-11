@@ -10,6 +10,7 @@ import WebKit
 import RxSwift
 import RxCocoa
 import RxOptional
+import RxWebKit
 
 class WKWebViewController: UIViewController {
 
@@ -28,13 +29,13 @@ class WKWebViewController: UIViewController {
 
     private func setupWebView() {
         // プログレスバーの表示制御、ゲージ制御、アクティビティーインジケーター表示制御で使うため、一旦オブザーバーを定義
-        let loadingObservable = webView.rx.observe(Bool.self,loading)
-            .filterNil()
+        let loadingObservable = webView.rx.loading
             .share()
 
         // プログレスバーの表示・非表示
         loadingObservable
             .map { return !$0 }
+            .observe(on: MainScheduler.instance)
             .bind(to: progressView.rx.isHidden)
             .disposed(by: disposeBag)
 
@@ -44,17 +45,16 @@ class WKWebViewController: UIViewController {
             .disposed(by: disposeBag)
 
         // NavigationControllerのタイトル表示
-        loadingObservable
-            .map { [weak self] _ in
-                return self?.webView.title
-            }
+        webView.rx.title
+            .filterNil()
+            .observe(on: MainScheduler.instance)
             .bind(to: navigationItem.rx.title)
             .disposed(by: disposeBag)
 
         // プログレスバーのゲージ制御
-        webView.rx.observe(Double.self, estimatedProgress)
-            .filterNil()
+        webView.rx.estimatedProgress
             .map { return Float($0)}
+            .observe(on: MainScheduler.instance)
             .bind(to: progressView.rx.progress)
             .disposed(by: disposeBag)
 

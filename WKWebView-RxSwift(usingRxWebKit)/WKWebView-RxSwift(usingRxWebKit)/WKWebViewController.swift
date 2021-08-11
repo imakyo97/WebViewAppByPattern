@@ -17,9 +17,6 @@ class WKWebViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
     @IBOutlet private weak var progressView: UIProgressView!
 
-    private let loading = "loading"
-    private let estimatedProgress = "estimatedProgress"
-
     private let disposeBag = DisposeBag()
 
     override func viewDidLoad() {

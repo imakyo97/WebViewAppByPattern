@@ -51,8 +51,6 @@ class WKWebViewController: UIViewController {
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == loading {
-            UIApplication.shared
-                .isNetworkActivityIndicatorVisible = webView.isLoading
             if !webView.isLoading {
                 // ロード完了時にProgressViewの進捗を0.0(非表示)にする
                 progressView.setProgress(0.0, animated: false)
